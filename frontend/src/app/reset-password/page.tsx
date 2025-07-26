@@ -100,9 +100,11 @@ function ResetPasswordForm() {
         <div className={styles.form}>
           <h2>Password Reset</h2>
           <p className={styles.success}>{message}</p>
-          <Link href="/login" className={styles.button}>
-            Go to Login
-          </Link>
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <Link href="/login" className={styles.button}>
+              Go to Login
+            </Link>
+          </div>
         </div>
       </div>
     );

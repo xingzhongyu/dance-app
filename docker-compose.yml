@@ -16,6 +16,8 @@ services:
     image: my-app/demos-base
     container_name: demos_container
     command: uvicorn demos.main:app --host 0.0.0.0 --port 8100
+    ports:
+      - "8100:8100"
     networks:
       - app-network
 
