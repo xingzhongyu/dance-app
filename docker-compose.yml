@@ -62,7 +62,7 @@ services:
         - NEXT_PUBLIC_BACKEND_URL=http://43.153.52.246:8005/
     container_name: nextjs_frontend_container
     ports:
-      - "81:3001"
+      - "81:3000"
     networks:
       - app-network
     depends_on:
