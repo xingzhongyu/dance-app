@@ -60,8 +60,8 @@ export default function AnalysisPage() {
       const atlasData = results.map(response => response.data);
       setAtlasMetadata(atlasData[0].atlas_metadata);
     } catch (err) {
-      console.error("获取Atlas元数据失败:", err);
-      setError(prev => prev + " 获取Atlas元数据失败。");
+      console.error("Failed to fetch Atlas metadata:", err);
+      setError(prev => prev + " Failed to fetch Atlas metadata.");
     } finally {
       // setLoadingAtlasData(false);
     }
@@ -74,7 +74,7 @@ export default function AnalysisPage() {
       skipEmptyLines: true,
       complete: (results) => {
         if (results.data) {
-          console.log("解析的CSV原始数据:", results.data);
+          console.log("Parsed CSV raw data:", results.data);
           
           const parsedMetadata = (results.data as MetadataRow[]).map((row) => ({
             Method: row.Method,
@@ -82,25 +82,25 @@ export default function AnalysisPage() {
             dataset_id: row.dataset_id
           }));
           
-          console.log("处理后的元数据:", parsedMetadata);
+          console.log("Processed metadata:", parsedMetadata);
           setMetadata(parsedMetadata);
           
           // 提取唯一的dataset_id并获取atlas元数据
           const atlasDatasetIds = Array.from(new Set(
             parsedMetadata
               .filter(row => {
-                console.log("检查行dataset_id:", row.dataset_id, typeof row.dataset_id);
+                console.log("Checking row dataset_id:", row.dataset_id, typeof row.dataset_id);
                 return row.dataset_id;
               })
               .map(row => row.dataset_id)
           ));
           
-          console.log("提取的atlas数据集ID:", atlasDatasetIds);
+          console.log("Extracted atlas dataset IDs:", atlasDatasetIds);
           
           if (atlasDatasetIds.length > 0) {
             fetchAtlasMetadata(atlasDatasetIds);
           } else {
-            console.log("没有有效的atlas数据集ID，fetchAtlasMetadata未被调用");
+            console.log("No valid atlas dataset IDs, fetchAtlasMetadata not called");
           }
         }
       },

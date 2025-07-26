@@ -9,9 +9,15 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)  # 添加邮箱字段
     hashed_password = Column(String)
     # A. Add an admin flag
     is_admin = Column(Boolean, default=False) 
+    is_email_verified = Column(Boolean, default=False)  # 添加邮箱验证状态
+    email_verification_token = Column(String, nullable=True)  # 邮箱验证令牌
+    email_verification_expires = Column(DateTime, nullable=True)  # 验证令牌过期时间
+    password_reset_token = Column(String, nullable=True)  # 密码重置令牌
+    password_reset_expires = Column(DateTime, nullable=True)  # 密码重置令牌过期时间
     
     datasets = relationship("Dataset", back_populates="owner", cascade="all, delete-orphan")
 

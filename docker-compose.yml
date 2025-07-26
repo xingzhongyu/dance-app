@@ -11,13 +11,13 @@ services:
     # ports:
     #   - "6379:6379"
 
-  # demos:
-  #   build: ./demos
-  #   image: my-app/demos-base
-  #   container_name: demos_container
-  #   command: uvicorn demos.main:app --host 0.0.0.0 --port 8100
-  #   networks:
-  #     - app-network
+  demos:
+    build: ./demos
+    image: my-app/demos-base
+    container_name: demos_container
+    command: uvicorn demos.main:app --host 0.0.0.0 --port 8100
+    networks:
+      - app-network
 
   # 后端FastAPI服务
   backend:
@@ -62,7 +62,7 @@ services:
         - NEXT_PUBLIC_BACKEND_URL=http://43.153.52.246:8005/
     container_name: nextjs_frontend_container
     ports:
-      - "81:3000"
+      - "81:3001"
     networks:
       - app-network
     depends_on:

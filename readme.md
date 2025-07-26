@@ -8,7 +8,7 @@ uvicorn main:app --host localhost --port 8005 --reload
 
 
 
-uvicorn main:app --host 0.0.0.0 --port 8100 --reload
+uvicorn demos.main:app --host 0.0.0.0 --port 8100 --reload
 INFO:     Will watch for changes in these directories: ['/home/zyxing/dance/examples/atlas/demos']
 
 

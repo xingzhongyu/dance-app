@@ -41,8 +41,8 @@ export default function AtlasDataTable({ datasets }: AtlasDataTableProps) {
 
   // 筛选相关的状态
   const [globalFilter, setGlobalFilter] = useState('');
-  const [speciesFilter, setSpeciesFilter] = useState('全部');
-  const [tissueFilter, setTissueFilter] = useState('全部');
+  const [speciesFilter, setSpeciesFilter] = useState('All');
+  const [tissueFilter, setTissueFilter] = useState('All');
 
    // --- 新增状态：用于管理功能下载的 loading 状态 ---
   // 使用一个对象来跟踪每个数据集的下载状态
@@ -119,12 +119,12 @@ export default function AtlasDataTable({ datasets }: AtlasDataTableProps) {
   // 1. 从原始数据中动态生成筛选选项，并去重、排序
   const speciesOptions = useMemo(() => {
     const speciesSet = new Set(datasets.map(d => d.atlas_metadata?.species).filter(Boolean));
-    return ['全部', ...Array.from(speciesSet).sort()];
+    return ['All', ...Array.from(speciesSet).sort()];
   }, [datasets]);
 
   const tissueOptions = useMemo(() => {
     const tissueSet = new Set(datasets.map(d => d.tissue_info).filter(Boolean));
-    return ['全部', ...Array.from(tissueSet).sort()];
+    return ['All', ...Array.from(tissueSet).sort()];
   }, [datasets]);
 
   // 2. 根据所有筛选条件，计算出过滤后的数据集
@@ -140,8 +140,8 @@ export default function AtlasDataTable({ datasets }: AtlasDataTableProps) {
         d.description.toLowerCase().includes(term);
         
       // 下拉筛选逻辑
-      const matchSpecies = speciesFilter === '全部' || d.atlas_metadata?.species === speciesFilter;
-      const matchTissue = tissueFilter === '全部' || d.tissue_info === tissueFilter;
+          const matchSpecies = speciesFilter === 'All' || d.atlas_metadata?.species === speciesFilter;
+    const matchTissue = tissueFilter === 'All' || d.tissue_info === tissueFilter;
 
       return matchGlobal && matchSpecies && matchTissue;
     });
@@ -268,10 +268,10 @@ export default function AtlasDataTable({ datasets }: AtlasDataTableProps) {
         </div>
         <div className={styles.filtersWrapper}>
           <select value={speciesFilter} onChange={handleFilterChange(setSpeciesFilter)} className={styles.filterSelect}>
-            {speciesOptions.map(opt => <option key={opt} value={opt}>{opt === '全部' ? 'All Species' : opt}</option>)}
+            {speciesOptions.map(opt => <option key={opt} value={opt}>{opt === 'All' ? 'All Species' : opt}</option>)}
           </select>
           <select value={tissueFilter} onChange={handleFilterChange(setTissueFilter)} className={styles.filterSelect}>
-            {tissueOptions.map(opt => <option key={opt} value={opt}>{opt === '全部' ? 'All Tissues' : opt}</option>)}
+            {tissueOptions.map(opt => <option key={opt} value={opt}>{opt === 'All' ? 'All Tissues' : opt}</option>)}
           </select>
         </div>
       </div>

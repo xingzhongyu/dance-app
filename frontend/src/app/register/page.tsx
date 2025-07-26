@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/context/AuthContext'; // Use our configured axios instance
 import { AxiosError } from 'axios';
@@ -9,20 +8,29 @@ import styles from '@/styles/Form.module.css'; // Use the common style created a
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+    setIsLoading(true);
 
-    // 1. Client-side password validation
+    // 1. Client-side validation
     if (password !== confirmPassword) {
-      setError('The two passwords do not match');
+      setError('Passwords do not match');
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setIsLoading(false);
       return;
     }
 
@@ -30,26 +38,30 @@ export default function RegisterPage() {
       // 2. Send registration request to backend
       await api.post('/auth/register', {
         username,
+        email,
         password,
       });
 
       // 3. Handle successful response
-      setSuccess('Registration successful! Redirecting to login page...');
+      setSuccess('Registration successful! Please check your email and click the verification link to complete registration.');
       
-      // Delay 2 seconds before redirecting, so user can see the success message
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
+      // 清空表单
+      setUsername('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
 
     } catch (err: unknown) {
       // 4. Handle error response
-      let errorMessage = 'Registration failed, please try again later.';
+      let errorMessage = 'Registration failed, please try again later';
       
       if (err instanceof AxiosError) {
         errorMessage = err.response?.data?.detail || errorMessage;
       }
       
       setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,6 +78,19 @@ export default function RegisterPage() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            disabled={isLoading}
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="email">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={isLoading}
           />
         </div>
 
@@ -77,6 +102,8 @@ export default function RegisterPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={isLoading}
+            minLength={6}
           />
         </div>
 
@@ -88,16 +115,20 @@ export default function RegisterPage() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            disabled={isLoading}
+            minLength={6}
           />
         </div>
 
         {error && <p className={styles.error}>{error}</p>}
         {success && <p className={styles.success}>{success}</p>}
 
-        <button type="submit" className={styles.button}>Register</button>
+        <button type="submit" className={styles.button} disabled={isLoading}>
+          {isLoading ? 'Registering...' : 'Register'}
+        </button>
 
         <p className={styles.switchLink}>
-          Already have an account? <Link href="/login">Log in now</Link>
+          Already have an account? <Link href="/login">Login now</Link>
         </p>
       </form>
     </div>

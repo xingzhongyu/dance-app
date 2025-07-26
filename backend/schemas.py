@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import List, Optional
 
@@ -12,10 +12,25 @@ class DatasetCreate(DatasetBase):
 
 class UserBase(BaseModel):
     username: str
+    email: EmailStr  # 添加邮箱字段
 
 class UserCreate(UserBase):
     password: str
-    
+
+class EmailVerification(BaseModel):
+    token: str
+
+class ResendVerification(BaseModel):
+    email: EmailStr
+
+class ForgotPassword(BaseModel):
+    email: EmailStr
+
+class ResetPassword(BaseModel):
+    token: str
+    new_password: str
+
+
     
 # --- 完整的 AtlasMetadata Schema ---
 class AtlasMetadataBase(BaseModel):
@@ -119,11 +134,15 @@ class Dataset(DatasetBase):
 class User(UserBase):
     id: int
     is_admin: bool # <-- Add this
+    is_email_verified: bool  # 添加邮箱验证状态
     datasets: List[Dataset] = []
 
     class Config:
         orm_mode = True
 
+class RegisterResponse(BaseModel):
+    message: str
+    user: User
 
         
 class Token(BaseModel):

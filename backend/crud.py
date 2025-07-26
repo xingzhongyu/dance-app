@@ -2,16 +2,120 @@ from typing import Optional
 from sqlalchemy.orm import Session
 import models, schemas, auth
 from sqlalchemy import or_ # <-- Import 'or_'
+from datetime import datetime, timedelta
+from email_service import generate_verification_token, send_verification_email, send_password_reset_email
+
 def get_user_by_username(db: Session, username: str):
     return db.query(models.User).filter(models.User.username == username).first()
 
+def get_user_by_email(db: Session, email: str):
+    return db.query(models.User).filter(models.User.email == email).first()
+
 def create_user(db: Session, user: schemas.UserCreate):
+    # 检查用户名和邮箱是否已存在
+    if get_user_by_username(db, user.username):
+        raise ValueError("用户名已存在")
+    if get_user_by_email(db, user.email):
+        raise ValueError("邮箱已被注册")
+    
     hashed_password = auth.get_password_hash(user.password)
-    db_user = models.User(username=user.username, hashed_password=hashed_password)
+    
+    # 生成验证令牌
+    verification_token = generate_verification_token()
+    expires = datetime.utcnow() + timedelta(hours=24)
+    
+    db_user = models.User(
+        username=user.username,
+        email=user.email,
+        hashed_password=hashed_password,
+        email_verification_token=verification_token,
+        email_verification_expires=expires
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    
+    # 发送验证邮件
+    send_verification_email(user.email, user.username, verification_token)
+    
     return db_user
+
+def verify_email(db: Session, token: str):
+    """验证邮箱地址"""
+    user = db.query(models.User).filter(
+        models.User.email_verification_token == token,
+        models.User.email_verification_expires > datetime.utcnow()
+    ).first()
+    
+    if not user:
+        return None
+    
+    # 更新用户状态
+    user.is_email_verified = True
+    user.email_verification_token = None
+    user.email_verification_expires = None
+    db.commit()
+    db.refresh(user)
+    
+    return user
+
+def resend_verification_email(db: Session, email: str):
+    """重新发送验证邮件"""
+    user = get_user_by_email(db, email)
+    if not user:
+        return False
+    
+    if user.is_email_verified:
+        return False
+    
+    # 生成新的验证令牌
+    verification_token = generate_verification_token()
+    expires = datetime.utcnow() + timedelta(hours=24)
+    
+    # 更新用户记录
+    user.email_verification_token = verification_token
+    user.email_verification_expires = expires
+    db.commit()
+    
+    # 发送验证邮件
+    return send_verification_email(user.email, user.username, verification_token)
+
+def send_password_reset_email_crud(db: Session, email: str):
+    """发送密码重置邮件"""
+    user = get_user_by_email(db, email)
+    if not user:
+        return False
+    
+    # 生成密码重置令牌
+    reset_token = generate_verification_token()
+    expires = datetime.utcnow() + timedelta(hours=1)  # 1小时过期
+    
+    # 更新用户记录
+    user.password_reset_token = reset_token
+    user.password_reset_expires = expires
+    db.commit()
+    
+    # 发送密码重置邮件
+    return send_password_reset_email(user.email, user.username, reset_token)
+
+def reset_password(db: Session, token: str, new_password: str):
+    """重置密码"""
+    user = db.query(models.User).filter(
+        models.User.password_reset_token == token,
+        models.User.password_reset_expires > datetime.utcnow()
+    ).first()
+    
+    if not user:
+        return None
+    
+    # 更新密码
+    user.hashed_password = auth.get_password_hash(new_password)
+    user.password_reset_token = None
+    user.password_reset_expires = None
+    db.commit()
+    db.refresh(user)
+    
+    return user
 
 def get_datasets_by_user(db: Session, user_id: int):
     """

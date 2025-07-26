@@ -46,7 +46,7 @@ export default function UploadForm() {
     }
     
     if (!datasetName.trim()) {
-      setStatus({ message: '请输入数据集名称', type: 'error' });
+      setStatus({ message: 'Please enter a dataset name', type: 'error' });
       return;
     }
 
@@ -82,7 +82,7 @@ export default function UploadForm() {
         const errorMessage = error.response?.data?.detail || 'An error occurred during upload.';
         setStatus({ message: errorMessage, type: 'error' });
       } else {
-        setStatus({ message: '上传过程中发生未知错误', type: 'error' });
+        setStatus({ message: 'An unknown error occurred during upload', type: 'error' });
       }
     }
   };

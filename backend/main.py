@@ -79,12 +79,43 @@ async def get_current_user(token: str = Depends(auth.oauth2_scheme), db: Session
     return user
 
 # --- 路由 ---
-@app.post("/api/auth/register", response_model=schemas.User)
+@app.post("/api/auth/register", response_model=schemas.RegisterResponse)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_username(db, username=user.username)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    return crud.create_user(db=db, user=user)
+    try:
+        db_user = crud.create_user(db=db, user=user)
+        return {"message": "注册成功！请检查您的邮箱并点击验证链接完成注册。", "user": db_user}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="注册失败，请稍后重试")
+
+@app.post("/api/auth/verify-email")
+def verify_email_endpoint(verification: schemas.EmailVerification, db: Session = Depends(get_db)):
+    user = crud.verify_email(db, verification.token)
+    if not user:
+        raise HTTPException(status_code=400, detail="验证链接无效或已过期")
+    return {"message": "邮箱验证成功！您现在可以登录了。"}
+
+@app.post("/api/auth/resend-verification")
+def resend_verification_endpoint(resend: schemas.ResendVerification, db: Session = Depends(get_db)):
+    success = crud.resend_verification_email(db, resend.email)
+    if not success:
+        raise HTTPException(status_code=400, detail="无法重新发送验证邮件，请检查邮箱地址或联系管理员")
+    return {"message": "验证邮件已重新发送，请检查您的邮箱"}
+
+@app.post("/api/auth/forgot-password")
+def forgot_password_endpoint(forgot: schemas.ForgotPassword, db: Session = Depends(get_db)):
+    success = crud.send_password_reset_email_crud(db, forgot.email)
+    if not success:
+        raise HTTPException(status_code=400, detail="无法发送密码重置邮件，请检查邮箱地址或联系管理员")
+    return {"message": "密码重置邮件已发送，请检查您的邮箱"}
+
+@app.post("/api/auth/reset-password")
+def reset_password_endpoint(reset: schemas.ResetPassword, db: Session = Depends(get_db)):
+    user = crud.reset_password(db, reset.token, reset.new_password)
+    if not user:
+        raise HTTPException(status_code=400, detail="密码重置链接无效或已过期")
+    return {"message": "密码重置成功！您现在可以使用新密码登录了。"}
 
 @app.post("/api/auth/login", response_model=schemas.Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -92,9 +123,18 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
     if not user or not auth.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="用户名或密码错误",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
+    # 检查邮箱是否已验证
+    if not user.is_email_verified:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="请先验证您的邮箱地址",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
     access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = auth.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
@@ -387,4 +427,4 @@ async def get_atlas_metadata(
     return target_dataset
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8005)
+    uvicorn.run(app, host="sdu-112", port=8005)

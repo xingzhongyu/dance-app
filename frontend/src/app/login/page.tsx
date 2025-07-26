@@ -12,12 +12,18 @@ export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showResendVerification, setShowResendVerification] = useState(false);
+  const [resendEmail, setResendEmail] = useState('');
+  const [resendMessage, setResendMessage] = useState('');
   const { login } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
+    setShowResendVerification(false);
+    setResendMessage('');
+    
     try {
       const formData = new URLSearchParams();
       formData.append('username', username);
@@ -30,14 +36,34 @@ export default function LoginPage() {
       login(response.data.access_token);
       router.push('/datasets');
     } catch (err: unknown) {
-      setError(err instanceof AxiosError ? err.response?.data?.detail : 'Login failed');
+      const errorMessage = err instanceof AxiosError ? err.response?.data?.detail : 'Login failed';
+      setError(errorMessage);
+      
+      if (errorMessage === '请先验证您的邮箱地址') {
+        setShowResendVerification(true);
+      }
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!resendEmail) {
+      setResendMessage('Please enter your email address');
+      return;
+    }
+
+    try {
+      await api.post('/auth/resend-verification', { email: resendEmail });
+      setResendMessage('Verification email has been resent, please check your inbox');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof AxiosError ? err.response?.data?.detail : 'Failed to send';
+      setResendMessage(errorMessage);
     }
   };
 
   return (
     <div className={styles.formContainer}>
       <form onSubmit={handleSubmit} className={styles.form}>
-        <h2>Welcome back</h2>
+        <h2>Welcome Back</h2>
         <div className={styles.formGroup}>
           <label htmlFor="username">Username</label>
           <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
@@ -49,9 +75,29 @@ export default function LoginPage() {
         {error && <p className={styles.error}>{error}</p>}
         <button type="submit" className={styles.button}>Login</button>
         
-        {/* --- This is the key modification --- */}
+        {showResendVerification && (
+          <div className={styles.resendVerification}>
+            <p>Your email is not verified, please check your email or resend the verification email:</p>
+            <div className={styles.formGroup}>
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                value={resendEmail}
+                onChange={(e) => setResendEmail(e.target.value)}
+              />
+              <button type="button" onClick={handleResendVerification} className={styles.button}>
+                Resend Verification Email
+              </button>
+            </div>
+            {resendMessage && <p className={resendMessage.includes('success') ? styles.success : styles.error}>{resendMessage}</p>}
+          </div>
+        )}
+        
         <p className={styles.switchLink}>
-          Don&apos;t have an account? <Link href="/register">Register now</Link>
+          No account yet? <Link href="/register">Register now</Link>
+        </p>
+        <p className={styles.switchLink}>
+          <Link href="/forgot-password">Forgot password?</Link>
         </p>
       </form>
     </div>
