@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -8,6 +9,14 @@ import { AxiosError } from 'axios';
 import styles from '@/styles/Form.module.css';
 
 export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailForm />
+    </Suspense>
+  );
+}
+
+function VerifyEmailForm() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
   const searchParams = useSearchParams();
