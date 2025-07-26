@@ -1,0 +1,859 @@
+/* =================================
+   主容器和标题样式
+   ================================= */
+   .container {
+    width: 100%;
+    max-width: 1200px; /* 增加最大宽度，从1200px提高到1400px */
+    /* margin: 0 auto; */
+    padding: 0 20px; /* 添加左右内边距，避免内容贴边 */
+  }
+  
+  .container h1 {
+    font-size: 2.2rem;
+    color: #2c3e50; /* 深蓝灰色，比纯黑更柔和 */
+    margin-bottom: 24px;
+    border-bottom: 2px solid #ecf0f1; /* 浅灰色下划线 */
+    padding-bottom: 12px;
+  }
+  
+  /* =================================
+     数据集列表布局 (Grid 布局)
+     ================================= */
+  .datasetList {
+    display: grid;
+    /* 
+      修改网格布局参数:
+      - auto-fill改为auto-fit：更好地利用可用空间
+      - 增加最小宽度从300px到350px，使卡片更大
+      这使得卡片更大，且在可用空间内均匀分布
+    */
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px; /* 增加卡片之间的间距，从24px到30px */
+    width: 100%; /* 确保列表使用全部可用宽度 */
+  }
+  
+  /* =================================
+     单个数据集卡片样式
+     ================================= */
+  .datasetCard {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 增强阴影效果 */
+    padding: 24px; /* 增加内边距，从20px到24px */
+    display: flex;
+    flex-direction: column; /* 垂直排列卡片内元素 */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid #e0e0e0;
+    min-height: 200px; /* 添加最小高度，确保卡片不会太扁 */
+  }
+  
+  .datasetCard:hover {
+    transform: translateY(-5px); /* 鼠标悬浮时轻微上移 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12); /* 悬浮时阴影加深 */
+  }
+  
+  /* 卡片内元素样式 */
+  .datasetCard h3 {
+    font-size: 1.25rem;
+    color: #34495e; /* 较深的蓝灰色 */
+    margin-top: 0;
+    margin-bottom: 12px;
+    /* 如果文件名过长，用省略号显示 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .datasetCard p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+    margin: 4px 0;
+    flex-grow: 1; /* 让描述部分占据多余空间，将按钮推到底部 */
+  }
+  
+  .datasetCard p strong {
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .datasetCard small {
+    display: block;
+    margin-top: 16px;
+    color: #888;
+    font-size: 0.8rem;
+  }
+  
+  /* =================================
+     分析按钮样式
+     ================================= */
+  .analyzeButton {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    background-color: #007bff; /* 使用和上传按钮一致的主题色 */
+    color: #ffffff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    margin-top: 16px; /* 和 small 标签保持间距 */
+    align-self: flex-start; /* 按钮宽度不撑满 */
+    transition: background-color 0.2s;
+  }
+  
+  .analyzeButton:hover {
+    background-color: #0056b3; /* 悬浮时颜色变深 */
+    color: #ffffff;
+  }
+  
+  /* =================================
+     空状态样式 (没有数据集时)
+     ================================= */
+  .datasetList p {
+    font-size: 1.1rem;
+    color: #777;
+    padding: 40px;
+    text-align: center;
+    background-color: #fafafa;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    grid-column: 1 / -1; /* 让这个元素横跨所有网格列 */
+  }
+  
+  .datasetList p a {
+    color: #007bff;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  .datasetList p a:hover {
+    text-decoration: underline;
+  }
+
+
+  /* 卡片内描述样式，防止描述过长破坏布局 */
+.description {
+    flex-grow: 1; /* 让描述部分占据多余空间，将按钮推到底部 */
+    word-break: break-word; /* 如果单词太长，允许换行 */
+  }
+  
+  
+  /* =================================
+     按钮组和删除按钮样式
+     ================================= */
+  .buttonGroup {
+    display: flex;
+    gap: 12px; /* 按钮之间的间距 */
+    margin-top: 16px;
+    align-items: center; /* 垂直居中对齐 */
+  }
+  
+  .analyzeButton {
+    /* 移除单独的 margin-top，由 buttonGroup 控制 */
+    margin-top: 0; 
+    /* 其他样式保持不变 */
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+  }
+  
+  .analyzeButton:hover {
+    background-color: #0056b3;
+  }
+  
+  .deleteButton {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #dc3545; /* 红色边框 */
+    background-color: #f8d7da; /* 淡红色背景 */
+    color: #721c24; /* 深红色文字 */
+    transition: all 0.2s;
+  }
+  
+  .deleteButton:hover {
+    background-color: #dc3545; /* 悬浮时变为实心红色 */
+    color: #ffffff; /* 文字变白 */
+    border-color: #c82333;
+  }
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .cardHeader h3 {
+    margin-top: 0;
+    flex-grow: 1;
+  }
+  
+  .publicBadge {
+    background-color: #e0e7ff;
+    color: #4338ca;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  /* Datasets.module.css */
+/* ... 其他样式 ... */
+
+.pageDescription {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 24px;
+  background-color: #e9ecef;
+  padding: 12px 16px;
+  border-radius: 6px;
+}
+/* --- 在 Datasets.module.css 中添加以下样式 --- */
+
+/* 表格容器，用于在小屏幕上实现水平滚动 */
+.tableContainer {
+  width: 100%;
+  overflow-x: auto; /* 关键！当表格宽度超过容器时，出现水平滚动条 */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  margin-top: 1.5rem;
+}
+
+/* 表格主体样式 */
+.datasetTable {
+  width: 100%;
+  border-collapse: collapse; /* 合并边框 */
+  min-width: 600px; /* 防止在窄屏上内容被过度挤压 */
+}
+
+/* 表头和表单元格的通用样式 */
+.datasetTable th,
+.datasetTable td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* 表头样式 */
+.datasetTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase; /* 标题大写 */
+  font-size: 0.85rem;
+}
+
+/* 表格行样式 */
+.datasetTable tbody tr {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* 鼠标悬停在行上时改变背景色，提供反馈 */
+.datasetTable tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+/* 最后一行的单元格没有下边框 */
+.datasetTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* "描述" 单元格的特定样式，可以限制其宽度 */
+.descriptionCell {
+  max-width: 300px; /* 防止描述过长导致表格过宽 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 过长时显示省略号 */
+  cursor: help; /* 提示用户可以悬停查看完整内容 */
+}
+.descriptionCell:hover {
+  white-space: normal; /* 悬停时显示完整内容 */
+  overflow: visible;
+}
+
+
+/* 操作链接/按钮的样式 */
+.actionLink {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.actionLink:hover {
+  background-color: #e9ecef;
+  text-decoration: underline;
+}
+
+/* 响应式设计：在小屏幕上，隐藏表头，使用 data-label 显示伪表头 */
+@media screen and (max-width: 768px) {
+  .datasetTable thead {
+    display: none; /* 隐藏传统表头 */
+  }
+
+  .datasetTable, .datasetTable tbody, .datasetTable tr, .datasetTable td {
+    display: block; /* 将表格元素变为块级，使其垂直排列 */
+    width: 100%;
+  }
+
+  .datasetTable tr {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .datasetTable td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%; /* 为伪表头留出空间 */
+    text-align: right;
+  }
+
+  .datasetTable td::before {
+    /* 使用 data-label 的内容作为伪表头 */
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: calc(50% - 30px);
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
+}
+/* Datasets.module.css */
+/* ... 其他样式 ... */
+
+.actionsCell {
+  display: flex;
+  gap: 10px; /* 按钮之间的间距 */
+  align-items: center;
+}
+
+.actionLink {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+/* 详情按钮样式 (蓝色) */
+.actionLink:first-child {
+  background-color: #e7f3ff;
+  color: #0056b3;
+  border: 1px solid #b3d7ff;
+}
+
+.actionLink:first-child:hover {
+  background-color: #cce5ff;
+}
+
+/* 下载按钮样式 (绿色) */
+.actionLink:not(:first-child) {
+    background-color: #e9f7ef;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.actionLink:not(:first-child):hover {
+    background-color: #d4edda;
+}
+/* --- 搜索框样式 --- */
+.searchContainer {
+  position: relative;
+  margin-bottom: 24px;
+  max-width: 400px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 12px 10px 40px; /* 左边留出图标空间 */
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+.searchInput:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+/* --- 表格样式 --- */
+.tableContainer {
+  overflow-x: auto; /* 在小屏幕上添加水平滚动条 */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.datasetTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.datasetTable th,
+.datasetTable td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.datasetTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.datasetTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.datasetTable tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+/* 可排序表头样式 */
+.sortableHeader {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 排序图标样式 */
+.sortIcon, .sortIconAsc, .sortIconDesc {
+  color: #aaa;
+  transition: color 0.2s;
+}
+.sortableHeader:hover .sortIcon {
+  color: #333;
+}
+.sortIconAsc, .sortIconDesc {
+  color: #007bff; /* 激活排序时图标变色 */
+}
+.sortIconAsc {
+    transform: rotate(180deg);
+}
+
+.descriptionCell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actionsCell {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+/* Datasets.module.css */
+
+/* ... (保留 .container, .pageDescription, .tableContainer, .datasetTable 等) ... */
+
+/* --- 搜索和筛选控件的容器 --- */
+.controlsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap; /* 在小屏幕上换行 */
+  gap: 16px;
+}
+
+.searchWrapper {
+  position: relative;
+  flex-grow: 1; /* 让搜索框占据更多空间 */
+  min-width: 250px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 12px 10px 40px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+.searchInput:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.filtersWrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.filterSelect {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  min-width: 150px;
+}
+.filterSelect:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* --- 分页样式 --- */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pagination span {
+  margin: 0 16px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.pagination button:disabled {
+  color: #aaa;
+  cursor: not-allowed;
+  background-color: #f9f9f9;
+}
+
+/* --- 表格中没有结果时的样式 --- */
+.noResults {
+  text-align: center;
+  padding: 40px;
+  color: #777;
+  font-size: 1.1rem;
+}
+
+/* src/styles/Datasets.module.css */
+
+/* 组件根容器 */
+.dataTableSection {
+  width: 100%;
+}
+.dataTableSection h2 {
+    font-size: 1.5rem;
+    color: #34495e;
+    margin-bottom: 16px;
+}
+
+/* 搜索和筛选控件的容器 */
+.controlsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.searchWrapper {
+  position: relative;
+  flex-grow: 1;
+  min-width: 250px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 12px 10px 40px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+.searchInput:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.filtersWrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.filterSelect {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  min-width: 150px;
+}
+.filterSelect:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* 表格样式 */
+.tableContainer {
+  overflow-x: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.datasetTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.datasetTable th,
+.datasetTable td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: middle;
+}
+
+.datasetTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.datasetTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.datasetTable tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+/* 描述单元格样式，防止文本过长破坏布局 */
+.descriptionCell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 操作按钮单元格样式 */
+.actionsCell {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.actionLink {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  text-align: center;
+  white-space: nowrap; /* 防止按钮文字换行 */
+}
+
+/* ... 详情和下载按钮的不同颜色样式 ... */
+.actionLink:first-child {
+  background-color: #e7f3ff;
+  color: #0056b3;
+  border: 1px solid #b3d7ff;
+}
+
+.actionLink:first-child:hover {
+  background-color: #cce5ff;
+}
+
+.actionLink:not(:first-child) {
+    background-color: #e9f7ef;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.actionLink:not(:first-child):hover {
+    background-color: #d4edda;
+}
+
+
+/* 分页样式 */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pagination span {
+  margin: 0 16px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.pagination button:disabled {
+  color: #aaa;
+  cursor: not-allowed;
+  background-color: #f9f9f9;
+}
+
+/* 表格中没有结果时的样式 */
+.noResults {
+  text-align: center;
+  padding: 40px;
+  color: #777;
+  font-size: 1.1rem;
+}
+/* ... (保留大部分已有样式) ... */
+
+.actionsCell {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap; /* 允许按钮换行 */
+}
+
+/* 统一 a 标签和 button 的样式 */
+.actionLink, .actionButton {
+  display: inline-flex; /* 使用 inline-flex 来对齐图标和文字 */
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  text-align: center;
+  white-space: nowrap;
+  border: 1px solid transparent; /* 占位边框 */
+  cursor: pointer;
+}
+
+/* 按钮的默认样式 (可以和 Link 区分开) */
+.actionButton {
+  background-color: #f0f0f0;
+  color: #333;
+  border-color: #ccc;
+}
+.actionButton:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+.actionButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* 错误状态按钮 */
+.errorButton {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+/* 加载图标的旋转动画 */
+.loadingIcon {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ... (保留 .actionLink 的不同颜色样式，或统一它们) ... */
+
+/* 下载按钮样式 */
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  background-color: #28a745; /* 绿色背景 */
+  color: #ffffff;
+  border: 1px solid #218838;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.downloadButton:hover {
+  background-color: #218838; /* 悬浮时颜色变深 */
+  color: #ffffff;
+  border-color: #1e7e34;
+}
+
+.downloadButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

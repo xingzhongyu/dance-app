@@ -1,0 +1,40 @@
+.container {
+    padding: 24px 40px;
+    width: 100%;
+  }
+  
+  .container h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 8px;
+  }
+  
+  .pageDescription {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 32px;
+    max-width: 800px;
+  }
+  
+  .pageLoading, .pageError {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    font-size: 1.5rem;
+    color: #555;
+  }
+  
+  .pageError {
+    color: #721c24;
+  }
+  
+  .separator {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 48px 0;
+  }
+  
+  .section {
+    width: 100%;
+  }

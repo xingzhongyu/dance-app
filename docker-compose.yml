@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Redis 服务
+  redis:
+    image: "redis:7-alpine" # 使用官方的轻量级Redis镜像
+    container_name: my_redis_container
+    networks:
+      - app-network
+    # 如果你想在宿主机上用Redis客户端调试，可以打开这个端口映射
+    # ports:
+    #   - "6379:6379"
+
+  # demos:
+  #   build: ./demos
+  #   image: my-app/demos-base
+  #   container_name: demos_container
+  #   command: uvicorn demos.main:app --host 0.0.0.0 --port 8100
+  #   networks:
+  #     - app-network
+
+  # 后端FastAPI服务
+  backend:
+    build: ./backend
+    image: my-app/fastapi-backend-base # 我们构建一个基础镜像
+    container_name: fastapi_backend_container
+    command: uvicorn main:app --host 0.0.0.0 --port 8005
+    ports:
+      - "8005:8005"
+    networks:
+      - app-network
+    depends_on:
+      - redis # FastAPI服务依赖于Redis
+      # - demos
+    environment:
+      # - DEMO_URL=http://demos:8100
+      - DEMO_URL=http://sdu-112:8100
+      - REDIS_URL=redis://redis:6379/0
+
+  # Celery Worker 服务
+  worker:
+    build: ./backend # << 使用和backend完全相同的构建上下文
+    image: my-app/fastapi-backend-base # << 使用和backend完全相同的镜像
+    container_name: celery_worker_container
+    # 运行Celery worker的命令
+    # 注意：在Linux容器里不再需要 -P solo
+    command: celery -A celery_worker.celery_app worker --loglevel=info
+    networks:
+      - app-network
+    depends_on:
+      - redis # Worker也依赖于Redis
+    environment:
+    # - DEMO_URL=http://demos:8100
+      - DEMO_URL=http://sdu-112:8100
+      - REDIS_URL=redis://redis:6379/0
+
+  # 前端Next.js服务
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - NEXT_PUBLIC_BACKEND_URL=http://43.153.52.246:8005/
+    container_name: nextjs_frontend_container
+    ports:
+      - "81:3000"
+    networks:
+      - app-network
+    depends_on:
+      - backend # 前端直接依赖于后端API
+      
+
+networks:
+  app-network:
+    driver: bridge

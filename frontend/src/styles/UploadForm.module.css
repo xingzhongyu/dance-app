@@ -1,0 +1,229 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 700px;
+  }
+  
+  .fileDropArea {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    position: relative;
+    background-color: #fafafa;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  
+  .fileDropArea:hover {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+  }
+  
+  .fileIcon {
+    color: #888;
+    margin-bottom: 16px;
+  }
+  
+  .fileInput {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .fileLabel {
+    color: #555;
+    font-weight: 500;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formGroup label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .formGroup input,
+  .formGroup textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  
+  .formGroup input:focus,
+  .formGroup textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  }
+  
+  .submitButton {
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    align-self: flex-start;
+  }
+  
+  .submitButton:hover {
+    background-color: #0056b3;
+  }
+  
+  .statusMessage {
+    padding: 12px;
+    border-radius: 4px;
+    margin-top: 10px;
+  }
+  
+  .statusMessage.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .statusMessage.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  .statusMessage.loading {
+    background-color: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+  }
+
+
+/* --- 以下是为单选按钮新增的样式 --- */
+
+/* 单选按钮组的容器，使用 grid 布局实现响应式 */
+.radioGroup {
+  display: grid;
+  /* 自动填充列，每列最小宽度100px，最大平分空间 */
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px; /* 按钮之间的间距 */
+  margin-top: 4px;
+}
+
+/* 单个单选按钮的标签样式 */
+.radioLabel {
+  display: inline-block; /* 允许设置padding和border */
+  text-align: center;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* 圆角胶囊形状 */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: #555;
+  background-color: #f9f9f9;
+  font-size: 0.9rem;
+}
+
+/* 隐藏原始的单选按钮 */
+.radioLabel input[type="radio"] {
+  display: none;
+}
+
+/* 鼠标悬浮在未选中项上的样式 */
+.radioLabel:has(input:not(:checked)):hover {
+  border-color: #888;
+  background-color: #f0f0f0;
+}
+
+/* 选中的单选按钮标签的样式 */
+/* :has() 是一个现代CSS选择器，支持所有主流浏览器 */
+.radioLabel:has(input:checked) {
+  background-color: #007bff; /* 主题色背景 */
+  color: white; /* 白色文字 */
+  border-color: #007bff; /* 主题色边框 */
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+
+/* New style for grouping the two file inputs */
+.fileInputGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 20px;
+}
+
+/* Make file drop area slightly smaller to fit side-by-side */
+.fileDropArea {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px; /* Reduced padding */
+  text-align: center;
+  position: relative;
+  background-color: #fafafa;
+  transition: border-color 0.2s, background-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px; /* Give it some height */
+}
+
+.fileIcon {
+  color: #888;
+  margin-bottom: 12px;
+}
+
+/* Styles for the admin checkbox */
+.adminCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fffbe6; /* A light yellow to indicate it's special */
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #fcefc7;
+}
+
+.adminCheckbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.adminCheckbox label {
+  font-weight: 500;
+  color: #8a6d3b;
+  cursor: pointer;
+  margin-bottom: 0; /* Override default label margin */
+}
+
+/* Responsive adjustment for smaller screens */
+@media (max-width: 768px) {
+  .fileInputGroup {
+    grid-template-columns: 1fr; /* Stack them vertically */
+  }
+}
+/* New style for the optional badge */
+.optionalBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #e2e8f0;
+  color: #4a5568;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}

@@ -1,0 +1,13 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  margin-left: 270px; /* 和侧边栏宽度一致 */
+  margin-top: 64px; /* 为Header留出空间 */
+  padding: 32px 40px;
+  width: calc(100% - 270px);
+  background-color: #f4f6f8;
+  min-height: calc(100vh - 64px);
+}

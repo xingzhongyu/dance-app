@@ -1,0 +1,342 @@
+/* =================================
+   主容器和标题
+   ================================= */
+   .container {
+    width: 100%;
+    max-width: 1400px; /* 分析页面可以更宽以容纳图像 */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* 各部分之间的垂直间距 */
+  }
+  
+  .container h1 {
+    font-size: 2.2rem;
+    color: #2c3e50;
+    margin-bottom: 0; /* 使用gap代替margin */
+  }
+  
+  /* =================================
+     控制区域 (输入和按钮)
+     ================================= */
+  .controls {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap; /* 在小屏幕上换行 */
+  }
+    
+  .controls label {
+    font-weight: 600;
+    color: #333;
+  }
+    
+  /* 
+    核心修改：
+    将 input 和 select 的样式合并，确保它们看起来一样 
+  */
+  .controls input,
+  .controls select {
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    flex-grow: 1; /* 输入框/下拉框占据多余空间 */
+    min-width: 250px; /* 保证最小宽度 */
+    background-color: white; /* 确保 select 背景色正确 */
+    cursor: pointer; /* 为下拉框添加手型光标 */
+  }
+
+  .controls input:focus,
+  .controls select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+  }
+  
+  .controls button {
+    padding: 10px 20px;
+    background-color: #28a745; /* 绿色，表示“开始”动作 */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .controls button:hover {
+    background-color: #218838; /* 悬浮时颜色变深 */
+  }
+  
+  .controls button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  /* =================================
+     状态和错误信息
+     ================================= */
+  .status {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #e9ecef; /* 中性背景 */
+    border: 1px solid #dee2e6;
+  }
+  
+  .status h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #343a40;
+  }
+  
+  .status p {
+    margin: 0;
+    color: #495057;
+    font-style: italic;
+  }
+  
+  .error {
+    padding: 15px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  
+  /* =================================
+     结果展示区域
+     ================================= */
+  .results {
+    margin-top: 16px;
+  }
+  
+  .results h2 {
+    font-size: 1.8rem;
+    color: #34495e;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+  }
+  
+  .imageGrid {
+    display: grid;
+    /* 响应式网格，每列最小400px，最大平分空间 */
+    grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+    gap: 20px;
+  }
+  
+  .imageGrid img {
+    width: 100%;
+    height: auto; /* 保持图片原始比例 */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: #fdfdfd; /* 图片加载前的背景色 */
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .imageGrid img:hover {
+    transform: scale(1.03); /* 鼠标悬浮时轻微放大 */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* =================================
+     加载状态的样式
+     ================================= */
+  /* 
+     你可以添加一个加载动画的样式，
+     例如在任务进行中时显示在状态区域 
+  */
+  .status[data-task-active="true"] h3::after {
+    content: '...';
+    display: inline-block;
+    animation: dots 1.4s infinite;
+    animation-timing-function: ease-in-out;
+  }
+  
+  @keyframes dots {
+    0%, 20% {
+      content: '.';
+    }
+    40% {
+      content: '..';
+    }
+    60% {
+      content: '...';
+    }
+    80%, 100% {
+      content: '';
+    }
+  }
+  .fileDownload {
+    margin-top: 16px;
+  }
+  
+  .downloadButton {
+    display: inline-block;
+    background-color: #17a2b8;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+  }
+  
+  .downloadButton:hover {
+    background-color: #138496;
+  }
+  .results {
+    margin-top: 24px;
+  }
+  .results h2 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+    color: #34495e;
+  }
+  
+  /* --- 新增 UMAP 图容器样式 --- */
+  .plotContainer {
+      width: 100%;
+      height: 500px;
+      padding: 16px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      border: 1px solid #e0e0e0;
+  }
+  /* src/styles/Analysis.module.css */
+
+/* ... (保留 .container, .controls, .status, .results 等) ... */
+
+/* --- 表格容器样式 (可以与 Datasets 模块共享或独立定义) --- */
+.tableContainer {
+  overflow-x: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-top: 16px; /* 为 h2 标题留出空间 */
+}
+
+/* --- 元数据表格的具体样式 --- */
+.metadataTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.metadataTable th,
+.metadataTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.metadataTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #343a40;
+  text-transform: capitalize; /* 让表头更好看 */
+}
+
+.metadataTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.metadataTable tbody tr:nth-child(even) {
+  background-color: #fcfdff; /* 淡色条纹，增加可读性 */
+}
+
+/* --- 下载按钮样式 --- */
+.fileDownload {
+  margin-top: 16px;
+}
+
+.downloadButton {
+  display: inline-block;
+  padding: 10px 18px;
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+.downloadButton:hover {
+  background-color: #218838;
+}
+/* --- Preprocessing Steps 样式 --- */
+.stepsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* 步骤之间的间距 */
+}
+
+.stepItem {
+  background-color: #f8f9fa;
+  border-left: 4px solid #007bff;
+  border-radius: 4px;
+  padding: 8px 12px;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.stepIcon {
+  color: #007bff;
+  flex-shrink: 0; /* 防止图标被压缩 */
+}
+
+.stepTitle {
+  font-family: 'Courier New', Courier, monospace; /* 使用等宽字体，更具技术感 */
+  font-size: 0.9rem;
+}
+
+.stepParams {
+  padding-left: 26px; /* 与图标对齐 */
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+
+.param {
+  display: flex;
+  gap: 6px;
+}
+
+.paramKey {
+  font-weight: 500;
+  color: #495057;
+}
+
+.paramValue {
+  color: #212529;
+  background-color: #e9ecef;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* 解析失败时的原始文本样式 */
+.rawText {
+  white-space: pre-wrap; /* 保持格式并自动换行 */
+  font-size: 0.8rem;
+  color: #6c757d;
+  background-color: #f1f3f5;
+  padding: 8px;
+  border-radius: 4px;
+}
