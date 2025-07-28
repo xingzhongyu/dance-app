@@ -16,7 +16,7 @@ SMTP_PASSWORD=your-app-password
 SENDER_EMAIL=your-email@gmail.com
 
 # 前端URL（用于邮件中的链接）
-FRONTEND_URL=http://localhost:3001
+FRONTEND_URL=http://omicsml.ai:81
 ```
 
 ## Gmail配置示例
