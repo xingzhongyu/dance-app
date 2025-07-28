@@ -27,6 +27,7 @@ app = FastAPI()
 origins = [
     "http://localhost:3000",
     "http://localhost:3001",
+    "http://sdu-112:3001",
     "http://43.153.52.246:81",
     "http://omicsml.ai:81"
 ]

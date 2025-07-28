@@ -4,3 +4,4 @@ demos/atlas_csvs
 demos/atlas_patterns
 demos/temp_data
 demos/new_sim
+*.h5ad
