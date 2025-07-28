@@ -27,6 +27,8 @@ services:
     image: my-app/demos-base
     container_name: demos_container
     command: uvicorn demos.main:app --host 0.0.0.0 --port 8100
+    ports:
+      - "8100:8100"
     networks:
       - app-network
 
@@ -44,6 +46,8 @@ services:
     environment:
       - DEMO_URL=http://sdu-112:8100
       - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./backend:/app/backend
 
   worker:
     build: ./backend
@@ -62,6 +66,7 @@ services:
     build:
       context: ./frontend
       args:
+        - NODE_ENV=production
         # 修改这里：前端现在通过相对路径 /api/ 访问后端
         # Nginx 会处理这个路径的转发
         - NEXT_PUBLIC_BACKEND_URL=/api/
