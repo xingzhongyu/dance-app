@@ -19,7 +19,7 @@ def generate_verification_token(length=32):
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for _ in range(length))
 
-def send_verification_email(email: str, username: str, token: str, base_url: str = "http://localhost:3001"):
+def send_verification_email(email: str, username: str, token: str, base_url: str = "http://omicsml.ai:81"):
     """发送邮箱验证邮件"""
     if not all([SMTP_USERNAME, SMTP_PASSWORD, SENDER_EMAIL]):
         print("警告: 邮件配置不完整，跳过邮件发送")
@@ -65,7 +65,7 @@ def send_verification_email(email: str, username: str, token: str, base_url: str
         print(f"发送邮件失败: {str(e)}")
         return False
 
-def send_password_reset_email(email: str, username: str, token: str, base_url: str = "http://localhost:3001"):
+def send_password_reset_email(email: str, username: str, token: str, base_url: str = "http://omicsml.ai:81"):
     """发送密码重置邮件"""
     if not all([SMTP_USERNAME, SMTP_PASSWORD, SENDER_EMAIL]):
         print("警告: 邮件配置不完整，跳过邮件发送")
