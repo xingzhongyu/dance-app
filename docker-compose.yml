@@ -31,6 +31,9 @@ services:
       - "8100:8100"
     networks:
       - app-network
+    environment:
+      - http_proxy=http://121.250.209.147:7890
+      - https_proxy=http://121.250.209.147:7890
 
   backend:
     build: ./backend

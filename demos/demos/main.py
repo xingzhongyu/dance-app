@@ -116,10 +116,16 @@ def get_sim(adata:ad.AnnData,tissue:str,sweep_dict:Optional[dict]=None,feature_n
     
     # for i, method_key in enumerate(methods):  # Renamed 'method' to 'method_key'
         # target_value_str, current_atlas_dataset = get_atlas_ans(None, method_key,feature_name=feature_name,data=df) # only for current_atlas_dataset
-    ans_conf = {
-        method: conf_data.loc[conf_data["dataset_id"] == atlas_dataset_res, f"{method}_step2_best_yaml"].iloc[0]
-        for method in methods
-    } 
+    # ans_conf = {
+    #     method: conf_data.loc[conf_data["dataset_id"] == atlas_dataset_res, f"{method}_step2_best_yaml"].iloc[0]
+    #     for method in methods
+    # } 
+    methods=["cta_celltypist", "cta_scdeepsort", "cta_singlecellnet", "cta_actinn"]
+    ans_conf={}
+    for method in methods:
+        row=conf_data.loc[conf_data["dataset_id"] == atlas_dataset_res]
+        ans_conf[method]=row[f"{method}_step2_best_yaml"].iloc[0]
+        ans_conf[f"{method}_res"]=row[f"{method}_best_res"].iloc[0]
     ans_conf["dataset_id"] = atlas_dataset_res
     if sweep_dict is not None:
         method_accs_cache= {}
@@ -252,7 +258,7 @@ async def run_similarity_analysis(
 #                 "cta_scdeepsort":"x78ukq8v",
 #                 "cta_singlecellnet":"cnzh26nr"}
 #     feature_name="metadata_sim"
-    ans=get_sim(adata,tissue,sweep_dict,feature_name=feature_name,use_sim_cache=True,query_dataset="576f193c-75d0-4a11-bd25-8676587e6dc2")
+    # ans=get_sim(adata,tissue,sweep_dict,feature_name=feature_name,use_sim_cache=True,query_dataset="576f193c-75d0-4a11-bd25-8676587e6dc2")
 #     print("要启动API服务，请在终端中运行: uvicorn main:app --reload")
 
 if __name__ == "__main__":
