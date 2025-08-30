@@ -50,7 +50,10 @@ services:
       - DEMO_URL=http://sdu-112:8100
       - REDIS_URL=redis://redis:6379/0
     volumes:
-      - ./backend:/app/backend
+      - ./backend:/app
+      - ./user_uploads:/uploads
+      - ./db_data:/data  # <--- 修改/新增这一行
+
 
   worker:
     build: ./backend
@@ -64,6 +67,10 @@ services:
     environment:
       - DEMO_URL=http://sdu-112:8100
       - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+      - ./user_uploads:/uploads
+      - ./db_data:/data # <--- 同样需要这一行
 
   frontend:
     build:
