@@ -1,6 +1,12 @@
 # 使用官方的Python基础镜像
 FROM python:3.11-slim
 
+
+RUN apt-get update && \
+    apt-get install -y sqlite3 --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+
 # 设置工作目录
 WORKDIR /app
 

@@ -172,7 +172,8 @@ async def upload_dataset(
     #     raise HTTPException(status_code=400, detail="Invalid CSV file format.")
 
     # D. Create user-specific directory and save both files
-    user_upload_dir = os.path.join("user_uploads", str(current_user.id))
+    base_upload_dir = "/uploads" 
+    user_upload_dir = os.path.join(base_upload_dir, str(current_user.id))
     os.makedirs(user_upload_dir, exist_ok=True)
     
     # Save .h5ad file
