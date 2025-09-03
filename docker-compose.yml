@@ -39,7 +39,7 @@ services:
     build: ./backend
     image: my-app/fastapi-backend-base
     container_name: fastapi_backend_container
-    command: uvicorn main:app --host 0.0.0.0 --port 8005
+    command: uvicorn main:app --host 0.0.0.0 --port 8005 --reload
     # ports: # <--- 移除端口暴露
     #   - "8005:8005"
     networks:
@@ -59,7 +59,8 @@ services:
     build: ./backend
     image: my-app/fastapi-backend-base
     container_name: celery_worker_container
-    command: celery -A celery_worker.celery_app worker --loglevel=info
+    # command: celery -A celery_worker.celery_app worker --loglevel=info 
+    command:  watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A celery_worker.celery_app worker --loglevel=info 
     networks:
       - app-network
     depends_on:

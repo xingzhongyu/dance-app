@@ -16,11 +16,17 @@ import uvicorn
 import crud, models, schemas, auth
 from database import SessionLocal, engine
 from celery_worker import get_atlas_method, run_analysis_task
-
+from mcp_server import combined_lifespan, mcp_app
 # 创建数据库表
 models.Base.metadata.create_all(bind=engine)
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-app = FastAPI()
+app = FastAPI(lifespan=combined_lifespan)
 
 # --- CORS 中间件 ---
 # 允许前端(localhost:3000)访问
@@ -28,6 +34,7 @@ origins = [
     "http://localhost:3000",
     "http://localhost:3001",
     "http://sdu-112:3001",
+    "http://sdu-112:81",
     "http://43.153.52.246:81",
     "http://omicsml.ai:81"
 ]
@@ -50,15 +57,10 @@ app.mount("/umaps", StaticFiles(directory="umaps"), name="umaps")
 # app.mount("/static",StaticFiles(directory="/home/common1/zyxing/scGPT/data/cellxgene/example_data_dataset/sample-embedding_v4_large_sampled"), name="atlas_umap")
 app.mount("/atlas_pattern",StaticFiles(directory="atlas_pngs"), name="atlas_pattern")
 app.mount("/atlas_pattern_csv",StaticFiles(directory="atlas_heads"), name="atlas_pattern_csv")
+app.mount("/mcp", mcp_app)
 with open("gene_maps.json", "r") as f:
     gene_maps = json.load(f)
-# --- 依赖 ---
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+
 
 async def get_current_user(token: str = Depends(auth.oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(

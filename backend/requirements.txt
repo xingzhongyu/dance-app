@@ -23,3 +23,6 @@ louvain==0.8.2
 # 如果需要其他特定依赖，请添加到这里
 requests>=2.31.0
 oss2>=2.19.0
+mcp==1.13.1
+fastmcp==2.11.3
+watchdog==6.0.0

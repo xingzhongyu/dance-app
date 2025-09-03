@@ -182,6 +182,9 @@ def get_sim(adata:ad.AnnData,tissue:str,sweep_dict:Optional[dict]=None,feature_n
 
 # ----------------- 新增 FastAPI 部分 -----------------
 app = FastAPI()
+@app.get("/api/hello")
+async def hello():
+    return {"message": "Hello, World!"}
 @app.get("/api/get_method")
 async def get_atlas_method(atlas_id,tissue):
     conf_data = pd.read_excel( "demos/Cell Type Annotation Atlas.xlsx", sheet_name=tissue)
